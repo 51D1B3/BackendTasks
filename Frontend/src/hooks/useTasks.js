@@ -34,12 +34,21 @@ export const useTasks = (initialFilters = {}) => {
 
   const updateTask = useCallback(async (id, taskData) => {
     try {
+      console.log('Tentative de mise à jour de la tâche:', { id, taskData });
       const response = await taskService.updateTask(id, taskData);
+      console.log('Réponse du serveur:', response);
+      
+      // Le serveur retourne directement la tâche mise à jour
+      const updatedTask = response;
       setTasks(prevTasks => 
-        prevTasks.map(task => task._id === id ? response : task)
+        prevTasks.map(task => task._id === id ? updatedTask : task)
       );
-      return response;
+      return updatedTask;
     } catch (err) {
+      console.error('Erreur complète updateTask:', err);
+      console.error('Réponse d\'erreur:', err.response);
+      console.error('Status:', err.response?.status);
+      console.error('Data:', err.response?.data);
       throw new Error(err.response?.data?.message || 'Erreur lors de la mise à jour de la tâche');
     }
   }, []);

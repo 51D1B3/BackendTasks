@@ -18,13 +18,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initAuth = () => {
       try {
-        const currentUser = authService.getCurrentUser();
-        if (currentUser && authService.isAuthenticated()) {
-          setUser(currentUser);
-        }
+        // Toujours effacer les données d'authentification au démarrage/actualisation
+        authService.logout();
+        setUser(null);
       } catch (error) {
         console.error('Erreur lors de l\'initialisation de l\'authentification:', error);
         authService.logout();
+        setUser(null);
       } finally {
         setLoading(false);
       }

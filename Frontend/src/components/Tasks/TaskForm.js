@@ -1,7 +1,8 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useState, useCallback, useEffect } from 'react';
 import Input from '../UI/Input';
 import Select from '../UI/Select';
 import Button from '../UI/Button';
+import { userService } from '../../services/api';
 
 const TaskForm = memo(({ 
   initialTask = null, 
@@ -14,10 +15,13 @@ const TaskForm = memo(({
     description: initialTask?.description || '',
     priority: initialTask?.priority || 'medium',
     status: initialTask?.status || 'todo',
-    dueDate: initialTask?.dueDate ? new Date(initialTask.dueDate).toISOString().split('T')[0] : ''
+    dueDate: initialTask?.dueDate ? new Date(initialTask.dueDate).toISOString().split('T')[0] : '',
+    assignedTo: initialTask?.assignedTo?._id || ''
   });
 
   const [errors, setErrors] = useState({});
+  const [users, setUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   const priorityOptions = [
     { value: 'low', label: 'Basse' },
@@ -29,6 +33,32 @@ const TaskForm = memo(({
     { value: 'todo', label: 'À faire' },
     { value: 'in_progress', label: 'En cours' },
     { value: 'done', label: 'Terminé' }
+  ];
+
+  // Charger la liste des utilisateurs au montage du composant
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoadingUsers(true);
+      try {
+        const response = await userService.getUsers();
+        setUsers(response.data || []);
+      } catch (error) {
+        console.error('Erreur lors du chargement des utilisateurs:', error);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // Options pour la liste déroulante d'assignation
+  const userOptions = [
+    { value: '', label: 'Non assigné' },
+    ...users.map(user => ({
+      value: user._id,
+      label: `${user.name} (${user.email})`
+    }))
   ];
 
   const handleChange = useCallback((e) => {
@@ -75,7 +105,8 @@ const TaskForm = memo(({
 
     const submitData = {
       ...formData,
-      dueDate: formData.dueDate || undefined
+      dueDate: formData.dueDate || undefined,
+      assignedTo: formData.assignedTo || undefined
     };
 
     try {
@@ -137,6 +168,17 @@ const TaskForm = memo(({
           error={errors.status}
         />
       </div>
+
+      <Select
+        label="Assigner à"
+        name="assignedTo"
+        value={formData.assignedTo}
+        onChange={handleChange}
+        options={userOptions}
+        error={errors.assignedTo}
+        disabled={loadingUsers}
+        placeholder={loadingUsers ? "Chargement des utilisateurs..." : "Sélectionner un utilisateur"}
+      />
 
       <Input
         label="Date d'échéance"
