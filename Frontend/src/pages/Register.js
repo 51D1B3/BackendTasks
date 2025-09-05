@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Input from '../components/UI/Input';
 import Button from '../components/UI/Button';
+import ThemeToggle from '../components/UI/ThemeToggle';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -84,15 +85,31 @@ const Register = () => {
   }, [formData, validateForm, register, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            📋 Gestionnaire de Tâches
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Créez votre compte
-          </p>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors relative">
+      {/* Sélecteur de thème - Position fixe en haut à droite */}
+      <div className="absolute top-6 right-6 z-10">
+        <ThemeToggle />
+      </div>
+      
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="max-w-md w-full space-y-8">
+        
+        <div className="text-center">
+          {/* Texte défilant */}
+          <div className="overflow-hidden bg-gradient-to-r from-green-500 to-blue-600 dark:from-green-600 dark:to-blue-700 rounded-lg p-3 mb-6">
+            <div className="animate-marquee whitespace-nowrap text-white text-sm font-medium">
+              ✨ Créez votre espace de travail • 📈 Optimisez votre productivité • 🔄 Synchronisez vos équipes • 🎆 Transformez vos idées en réalité • 🏆 Réussissez ensemble
+            </div>
+          </div>
+          
+          <div className="bg-white/10 dark:bg-gray-800/20 backdrop-blur-md rounded-2xl p-8 border border-white/20 dark:border-gray-700/30">
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">
+              📋 Gestionnaire de Tâches
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Créez votre compte
+            </p>
+          </div>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -142,8 +159,8 @@ const Register = () => {
           </div>
 
           {errors.submit && (
-            <div className="bg-danger-50 border border-danger-200 rounded-md p-3">
-              <p className="text-sm text-danger-600">{errors.submit}</p>
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
+              <p className="text-sm text-red-600 dark:text-red-400">{errors.submit}</p>
             </div>
           )}
 
@@ -157,17 +174,18 @@ const Register = () => {
           </Button>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               Déjà un compte ?{' '}
               <Link 
                 to="/login" 
-                className="font-medium text-primary-600 hover:text-primary-500"
+                className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
               >
                 Se connecter
               </Link>
             </p>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

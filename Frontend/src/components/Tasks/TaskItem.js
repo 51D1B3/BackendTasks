@@ -7,8 +7,12 @@ const TaskItem = memo(({
   onEdit, 
   onDelete 
 }) => {
-  const handleToggleStatus = useCallback(() => {
-    onToggleStatus(task._id, task.status);
+  const handleToggleStatus = useCallback(async () => {
+    try {
+      await onToggleStatus(task._id, task.status);
+    } catch (error) {
+      alert('Erreur lors de la mise à jour du statut: ' + error.message);
+    }
   }, [task._id, task.status, onToggleStatus]);
 
   const handleEdit = useCallback(() => {
@@ -108,6 +112,9 @@ const TaskItem = memo(({
           >
             {task.status === 'done' ? '↶ Rouvrir' : task.status === 'in_progress' ? '✓ Terminer' : '▶ Commencer'}
           </Button>
+          {task.status === 'done' && (
+            <span className="text-green-600 text-sm font-medium">✅ Tâche terminée</span>
+          )}
           <Button
             variant="secondary"
             size="sm"

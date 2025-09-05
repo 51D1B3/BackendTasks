@@ -63,13 +63,37 @@ export const useTasks = (initialFilters = {}) => {
   }, []);
 
   const toggleTaskStatus = useCallback(async (id, currentStatus) => {
-    const statusMap = {
-      'todo': 'in_progress',
-      'in_progress': 'done',
-      'done': 'todo'
-    };
-    const newStatus = statusMap[currentStatus] || 'todo';
-    return updateTask(id, { status: newStatus });
+    let newStatus;
+    switch (currentStatus) {
+      case 'todo':
+        newStatus = 'in_progress';
+        break;
+      case 'in_progress':
+        newStatus = 'done';
+        break;
+      case 'done':
+        newStatus = 'todo';
+        break;
+      default:
+        newStatus = 'todo';
+    }
+    
+    try {
+      const updatedTask = await updateTask(id, { status: newStatus });
+      
+      // Afficher un message de confirmation selon le nouveau statut
+      if (newStatus === 'done') {
+        alert('✅ Tâche marquée comme terminée !');
+      } else if (newStatus === 'in_progress') {
+        alert('▶ Tâche commencée !');
+      } else if (newStatus === 'todo') {
+        alert('↶ Tâche rouverte !');
+      }
+      
+      return updatedTask;
+    } catch (error) {
+      throw error;
+    }
   }, [updateTask]);
 
   const filteredTasks = useMemo(() => {

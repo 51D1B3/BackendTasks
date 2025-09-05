@@ -53,6 +53,15 @@ const MemberDashboard = memo(() => {
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       await updateTask(taskId, { status: newStatus });
+      
+      // Afficher un message de confirmation selon le nouveau statut
+      if (newStatus === 'done') {
+        alert('✅ Tâche marquée comme terminée ! L\'administrateur sera notifié.');
+      } else if (newStatus === 'in_progress') {
+        alert('▶ Tâche commencée ! L\'administrateur sera notifié.');
+      } else if (newStatus === 'todo') {
+        alert('↶ Tâche remise à faire ! L\'administrateur sera notifié.');
+      }
     } catch (error) {
       alert('Erreur lors de la mise à jour: ' + error.message);
     }
@@ -100,9 +109,9 @@ const MemberDashboard = memo(() => {
   return (
     <div className="space-y-6">
       {/* En-tête Membre */}
-      <div className="glass-effect bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl shadow-2xl p-8 text-white animate-bounce-in floating-animation">
+      <div className="glass-effect bg-gradient-to-r from-green-400 to-blue-500 dark:from-green-500 dark:to-blue-600 rounded-2xl shadow-2xl p-8 text-white animate-bounce-in floating-animation">
         <h1 className="text-4xl font-bold mb-3 animate-fade-in">🎯 Mes Tâches</h1>
-        <p className="text-green-100 text-lg animate-slide-in">
+        <p className="text-green-100 dark:text-green-200 text-lg animate-slide-in">
           Bonjour {user?.name}, voici vos tâches assignées
         </p>
       </div>
@@ -150,16 +159,21 @@ const MemberDashboard = memo(() => {
             ) : (
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {activeTasks.map((task) => (
-                  <div key={task._id} className={`p-4 rounded-lg border ${getPriorityColor(task.priority)}`}>
+                  <div key={task._id} className={`p-4 rounded-lg border ${getPriorityColor(task.priority)} ${task.status === 'done' ? 'opacity-75' : ''}`}>
                     <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-medium text-gray-900">{task.title}</h3>
+                      <h3 className={`font-medium ${task.status === 'done' ? 'line-through text-gray-500' : 'text-gray-900'}`}>
+                        {task.title}
+                        {task.status === 'done' && <span className="ml-2 text-green-600">✅</span>}
+                      </h3>
                       <span className="text-xs px-2 py-1 rounded-full bg-white border">
                         {task.priority === 'high' ? '🔥 Haute' : task.priority === 'medium' ? '⚡ Moyenne' : '📋 Basse'}
                       </span>
                     </div>
                     
                     {task.description && (
-                      <p className="text-sm text-gray-600 mb-3">{task.description}</p>
+                      <p className={`text-sm mb-3 ${task.status === 'done' ? 'line-through text-gray-400' : 'text-gray-600'}`}>
+                        {task.description}
+                      </p>
                     )}
                     
                     <div className="flex items-center justify-between">
@@ -237,6 +251,16 @@ const MemberDashboard = memo(() => {
           </Button>
           <div className="text-sm text-gray-500 flex items-center">
             ℹ️ Vous pouvez uniquement modifier le statut de vos tâches assignées
+          </div>
+        </div>
+        
+        <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+          <h4 className="font-medium text-green-900 mb-2">✨ Synchronisation automatique :</h4>
+          <div className="text-sm text-green-700 space-y-1">
+            <p>• Vos changements de statut sont automatiquement visibles par l'administrateur</p>
+            <p>• Les tâches terminées sont marquées d'une coche ✅ et barrées</p>
+            <p>• L'administrateur reçoit une notification pour chaque mise à jour</p>
+            <p>• Utilisez le menu déroulant "Statut" pour changer l'état de vos tâches</p>
           </div>
         </div>
       </div>

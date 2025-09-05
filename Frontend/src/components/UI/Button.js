@@ -14,11 +14,11 @@ const Button = memo(({
   const baseClasses = 'font-medium rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95';
   
   const variants = {
-    primary: 'btn-primary',
-    secondary: 'btn-secondary',
-    danger: 'btn-danger',
-    success: 'btn-success',
-    outline: 'border-2 border-sky-300 bg-white/80 hover:bg-sky-50 text-sky-700 focus:ring-sky-200 backdrop-blur-sm'
+    primary: 'btn-primary dark:bg-blue-600 dark:hover:bg-blue-700',
+    secondary: 'btn-secondary dark:bg-gray-600 dark:hover:bg-gray-700 dark:text-white',
+    danger: 'btn-danger dark:bg-red-600 dark:hover:bg-red-700',
+    success: 'btn-success dark:bg-green-600 dark:hover:bg-green-700',
+    outline: 'border-2 border-sky-300 bg-white/80 hover:bg-sky-50 text-sky-700 focus:ring-sky-200 backdrop-blur-sm dark:border-gray-600 dark:bg-gray-800/80 dark:hover:bg-gray-700 dark:text-gray-300'
   };
 
   const sizes = {

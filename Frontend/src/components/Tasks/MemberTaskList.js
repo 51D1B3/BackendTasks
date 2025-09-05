@@ -27,6 +27,15 @@ const MemberTaskList = memo(() => {
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       await updateTask(taskId, { status: newStatus });
+      
+      // Message de confirmation avec notification admin
+      if (newStatus === 'done') {
+        alert('✅ Tâche marquée comme terminée ! L\'administrateur verra cette mise à jour automatiquement.');
+      } else if (newStatus === 'in_progress') {
+        alert('▶ Tâche commencée ! L\'administrateur verra cette mise à jour automatiquement.');
+      } else if (newStatus === 'todo') {
+        alert('↶ Tâche remise à faire ! L\'administrateur verra cette mise à jour automatiquement.');
+      }
     } catch (error) {
       alert('Erreur lors de la mise à jour: ' + error.message);
     }
@@ -131,12 +140,17 @@ const MemberTaskList = memo(() => {
       ) : (
         <div className="space-y-4">
           {myTasks.map((task) => (
-            <div key={task._id} className={`rounded-lg border-2 p-6 ${getPriorityColor(task.priority)}`}>
+            <div key={task._id} className={`rounded-lg border-2 p-6 ${getPriorityColor(task.priority)} ${task.status === 'done' ? 'opacity-75' : ''}`}>
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{task.title}</h3>
+                  <h3 className={`text-lg font-semibold mb-2 ${task.status === 'done' ? 'line-through text-gray-500' : 'text-gray-900'}`}>
+                    {task.title}
+                    {task.status === 'done' && <span className="ml-2 text-green-600">✅</span>}
+                  </h3>
                   {task.description && (
-                    <p className="text-gray-700 mb-3">{task.description}</p>
+                    <p className={`mb-3 ${task.status === 'done' ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                      {task.description}
+                    </p>
                   )}
                 </div>
                 <div className="flex items-center space-x-2">

@@ -3,6 +3,7 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -65,6 +66,7 @@ module.exports = {
         'scale-in': 'scaleIn 0.2s ease-out',
         'pulse-slow': 'pulse 3s infinite',
         'float': 'float 3s ease-in-out infinite',
+        'marquee': 'marquee 15s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -88,6 +90,10 @@ module.exports = {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(-100%)' },
         }
       }
     },
